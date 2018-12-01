@@ -9,3 +9,7 @@ case class EditTodoCommand(
     title: String,
     description: String
 )
+
+case class UpdateCompleteFlagCommand(
+    isCompleted: Boolean
+)
