@@ -1,0 +1,20 @@
+### - PLain read
+GET http://localhost:9000/todos
+Content-type: application/json
+
+### - Create TODO with incomplete parameters
+POST http://localhost:9000/todos
+Content-type: application/json
+
+{}
+
+### - Create TODO
+POST http://localhost:9000/todos
+Content-type: application/json
+
+{
+    "title" : "Todo Title",
+    "description" : "Todo Description"
+}
+
+### -
