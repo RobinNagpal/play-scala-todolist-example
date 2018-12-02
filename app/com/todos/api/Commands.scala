@@ -7,7 +7,8 @@ case class CreateTodoCommand(
 
 case class EditTodoCommand(
     title: String,
-    description: String
+    description: String,
+    completed: Boolean
 )
 
 case class UpdateCompleteFlagCommand(

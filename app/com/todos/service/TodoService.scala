@@ -5,7 +5,6 @@ import java.util.UUID
 import com.todos.api.{CreateTodoCommand, EditTodoCommand}
 import com.todos.model.Todo
 import javax.inject.Singleton
-import play.api.mvc.Result
 
 import scala.concurrent.Future
 
@@ -28,18 +27,18 @@ class TodoServiceImpl extends TodoService {
 
   override def getTodos(): Future[List[Todo]] = {
     Future.successful(List(
-      Todo(id = UUID.randomUUID(), title = "Title 1"),
-      Todo(id = UUID.randomUUID(), title = "Title 2"),
-      Todo(id = UUID.randomUUID(), title = "Title 3")
+      Todo(id = UUID.randomUUID(), title = "Title 1", completed = false, comments = List.empty),
+      Todo(id = UUID.randomUUID(), title = "Title 2", completed = false, comments = List.empty),
+      Todo(id = UUID.randomUUID(), title = "Title 3", completed = false, comments = List.empty)
     ))
   }
 
   override def createTodo(cmd: CreateTodoCommand): Future[Todo] = {
-    Future.successful(Todo(id = UUID.randomUUID(), title = "Title 2"))
+    Future.successful(Todo(id = UUID.randomUUID(), title = "Title 2", completed = false, comments = List.empty))
   }
 
   override def editTodo(cmd: EditTodoCommand): Future[Todo] = {
-    Future.successful(Todo(id = UUID.randomUUID(), title = "Title 2"))
+    Future.successful(Todo(id = UUID.randomUUID(), title = "Title 2", completed = false, comments = List.empty))
   }
 
   def deleteTodo(id: UUID): Future[Unit] = Future.unit

@@ -31,8 +31,8 @@ class TodoControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller = new TodoController(stubControllerComponents(), todoService)
 
 
-      val todo1 = Todo(id = UUID.randomUUID(), title = "Title 1")
-      val todo2 = Todo(id = UUID.randomUUID(), title = "Title 2")
+      val todo1 = Todo(id = UUID.randomUUID(), title = "Title 1", completed = false, comments = List.empty)
+      val todo2 = Todo(id = UUID.randomUUID(), title = "Title 2", completed = false, comments = List.empty)
       val todos = List(todo1, todo2)
       when(todoService.getTodos()) thenReturn Future.successful(todos)
 
@@ -47,7 +47,7 @@ class TodoControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val todoService = mock[TodoService]
       val controller = new TodoController(stubControllerComponents(), todoService)
 
-      val todo = Todo(id = UUID.randomUUID(), title = "Title 1")
+      val todo = Todo(id = UUID.randomUUID(), title = "Title 1", completed = false, comments = List.empty)
       when(todoService.createTodo(any[CreateTodoCommand])) thenReturn Future.successful(todo)
 
       val request: Request[CreateTodoCommand] = FakeRequest(
@@ -68,14 +68,14 @@ class TodoControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val todoService = mock[TodoService]
       val controller = new TodoController(stubControllerComponents(), todoService)
 
-      val todo = Todo(id = UUID.randomUUID(), title = "Title 1")
+      val todo = Todo(id = UUID.randomUUID(), title = "Title 1", completed = false, comments = List.empty)
       when(todoService.editTodo(any[EditTodoCommand])) thenReturn Future.successful(todo)
 
       val request: Request[EditTodoCommand] = FakeRequest(
         method = POST,
         uri = "/todos",
         headers = FakeHeaders(),
-        body = EditTodoCommand(title = "title", description = "description")
+        body = EditTodoCommand(title = "title", completed= false, description = "description")
       )
 
       val response: Future[Result] = controller.editTodo().apply(request)
