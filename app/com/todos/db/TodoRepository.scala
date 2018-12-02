@@ -9,8 +9,24 @@ import play.api.db.DBApi
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
+trait TodoRepository {
+  def getAllTodos(): Future[List[Todo]]
+
+  def findById(id: UUID): Future[Option[Todo]]
+
+  def add(todo: Todo): Future[UUID]
+
+  def addComment(todoId: UUID, comment: Comment): Future[UUID]
+
+  def update(todo: Todo): Future[Unit]
+
+  def updateCompleteFlag(todoId: UUID, completed: Boolean): Future[Int]
+
+  def delete(id: UUID): Future[Unit]
+}
+
 @Singleton
-class TodoRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionContext) {
+class TodoRepositoryImpl @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionContext) extends TodoRepository {
   case class TodoDBO(
       id: UUID,
       title: String,
@@ -27,7 +43,7 @@ class TodoRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionConte
   val commentParser: RowParser[CommentDBO] = Macro.namedParser[CommentDBO]
   private val db = dbapi.database("default")
 
-  def add(todo: Todo): Future[UUID] =
+  override def add(todo: Todo): Future[UUID] =
     Future {
       db.withConnection { implicit connection =>
         SQL"""
@@ -38,7 +54,7 @@ class TodoRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionConte
       }
     }(ec)
 
-  def findById(id: UUID): Future[Option[Todo]] = {
+  override def findById(id: UUID): Future[Option[Todo]] = {
     val todoOptionalFuture: Future[Option[TodoDBO]] = findTodoDBO(id)
     todoOptionalFuture.flatMap(
       todoOpt => {
@@ -67,7 +83,7 @@ class TodoRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionConte
       }
     }(ec)
 
-  def getAllTodos(): Future[List[Todo]] = {
+  override def getAllTodos(): Future[List[Todo]] = {
     val groupedCommentsFuture: Future[Map[UUID, List[CommentDBO]]] = getAllCommentDBOs().map(comments => comments.groupBy(_.todoid))
     val todosFuture: Future[List[TodoDBO]] = getAllTodoDBOs()
     for {
@@ -98,7 +114,7 @@ class TodoRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionConte
     }(ec)
 
 
-  def delete(id: UUID): Future[Unit] = {
+  override def delete(id: UUID): Future[Unit] = {
     for {
       _ <- deleteComments(id)
       _ <- deleteTodo(id)
@@ -121,7 +137,7 @@ class TodoRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionConte
     }(ec)
 
 
-  def addComment(todoId: UUID, comment: Comment): Future[UUID] =
+  override def addComment(todoId: UUID, comment: Comment): Future[UUID] =
     Future {
       db.withConnection { implicit connection =>
         SQL"""
@@ -132,7 +148,7 @@ class TodoRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionConte
       }
     }(ec)
 
-  def update(todo: Todo): Future[Unit] = {
+  override def update(todo: Todo): Future[Unit] = {
     for {
       _ <- updateTodo(todo)
       _ <- updateComments(todo.id, todo.comments)
@@ -156,7 +172,7 @@ class TodoRepository @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionConte
 
 
 
-  def updateCompleteFlag(todoId: UUID, completed: Boolean): Future[Int] =
+  override def updateCompleteFlag(todoId: UUID, completed: Boolean): Future[Int] =
     Future {
       db.withConnection { implicit connection =>
         SQL"update todo set completed=${completed} where id = ${todoId}::uuid".executeUpdate()
