@@ -1,14 +1,21 @@
 package com.todos.api
 
+import java.util.UUID
+
 case class CreateTodoCommand(
-    title: String,
-    description: String
+    title: String
+)
+
+case class EditCommentCommand(
+    id: UUID,
+    content: String
 )
 
 case class EditTodoCommand(
+    id: UUID,
     title: String,
-    description: String,
-    completed: Boolean
+    completed: Boolean,
+    comments: List[EditCommentCommand]
 )
 
 case class UpdateCompleteFlagCommand(

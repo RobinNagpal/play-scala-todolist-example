@@ -54,7 +54,7 @@ class TodoControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
         method = POST,
         uri = "/todos",
         headers = FakeHeaders(),
-        body = CreateTodoCommand(title = "title", description = "description")
+        body = CreateTodoCommand(title = "title")
       )
 
       val response: Future[Result] = controller.createTodo().apply(request)
@@ -75,7 +75,7 @@ class TodoControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
         method = POST,
         uri = "/todos",
         headers = FakeHeaders(),
-        body = EditTodoCommand(title = "title", completed= false, description = "description")
+        body = EditTodoCommand(id= UUID.randomUUID(), title = "title", completed= false, comments = List.empty[EditCommentCommand])
       )
 
       val response: Future[Result] = controller.editTodo().apply(request)

@@ -15,7 +15,7 @@ class TodoRepositorySpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFut
   "Todo Repository" should {
     "be able to add a new todo item" in {
       val todo = Todo(id = UUID.randomUUID(), title = "Todo title", completed = false ,comments = List.empty)
-      whenReady(todoRepo.add(todo)) { result => {
+      whenReady(todoRepo.add(todo.id, todo.title)) { result => {
         result mustBe todo.id
       }
       }
@@ -29,7 +29,7 @@ class TodoRepositorySpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFut
         comments = List(Comment(id = UUID.randomUUID(), content = "Comment content"))
       )
 
-      whenReady(todoRepo.add(todo)) { result => {
+      whenReady(todoRepo.add(todo.id, todo.title)) { result => {
         result mustBe todo.id
         whenReady(todoRepo.addComment(todo.id, todo.comments.head)) { result => {
           result mustBe todo.comments.head.id
@@ -51,7 +51,7 @@ class TodoRepositorySpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFut
 
       val todoOptionFuture =
         for {
-          _ <- todoRepo.add(todo)
+          _ <- todoRepo.add(todo.id, todo.title)
           _ <- todoRepo.addComment(todo.id, todo.comments(0))
           _ <- todoRepo.addComment(todo.id, todo.comments(1))
           todoWithComments <- todoRepo.findById(todo.id)
@@ -75,7 +75,7 @@ class TodoRepositorySpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFut
 
       val todoOptionFuture =
         for {
-          _ <- todoRepo.add(todo)
+          _ <- todoRepo.add(todo.id, todo.title)
           _ <- todoRepo.addComment(todo.id, todo.comments(0))
           _ <- todoRepo.addComment(todo.id, todo.comments(1))
           _ <- todoRepo.delete(todo.id)
@@ -100,7 +100,7 @@ class TodoRepositorySpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFut
 
       val todoOptionFuture =
         for {
-          _ <- todoRepo.add(todo)
+          _ <- todoRepo.add(todo.id, todo.title)
           _ <- todoRepo.addComment(todo.id, todo.comments(0))
           _ <- todoRepo.addComment(todo.id, todo.comments(1))
           _ <- todoRepo.updateCompleteFlag(todo.id, true)
@@ -129,7 +129,7 @@ class TodoRepositorySpec extends PlaySpec with GuiceOneAppPerSuite with ScalaFut
 
       val todoOptionFuture =
         for {
-          _ <- todoRepo.add(todo)
+          _ <- todoRepo.add(todo.id, todo.title)
           _ <- todoRepo.addComment(todo.id, todo.comments(0))
           _ <- todoRepo.addComment(todo.id, todo.comments(1))
           _ <- todoRepo.update(updaed)

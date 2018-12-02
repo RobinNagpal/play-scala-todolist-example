@@ -14,7 +14,7 @@ trait TodoRepository {
 
   def findById(id: UUID): Future[Option[Todo]]
 
-  def add(todo: Todo): Future[UUID]
+  def add(id: UUID, title: String): Future[UUID]
 
   def addComment(todoId: UUID, comment: Comment): Future[UUID]
 
@@ -43,12 +43,12 @@ class TodoRepositoryImpl @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionC
   val commentParser: RowParser[CommentDBO] = Macro.namedParser[CommentDBO]
   private val db = dbapi.database("default")
 
-  override def add(todo: Todo): Future[UUID] =
+  override def add(id: UUID, title: String): Future[UUID] =
     Future {
       db.withConnection { implicit connection =>
         SQL"""
         insert into "todo" ( "id", "title", "completed" ) values (
-          ${todo.id}::uuid, ${todo.title}, ${todo.completed}
+          ${id}::uuid, ${title}, false
         )
       """.executeInsert(SqlParser.scalar[UUID].single)
       }
