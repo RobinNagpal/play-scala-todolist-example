@@ -3,7 +3,7 @@ package com.todos.api
 import java.util.UUID
 
 import com.todos.json.Serializers
-import com.todos.model.Todo
+import com.todos.model.{Comment, Todo}
 import com.todos.service.TodoService
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -112,6 +112,18 @@ class TodoControllerSpec extends PlaySpec with MockitoSugar with Serializers {
       status(response) mustBe OK
     }
 
+    "get todo should return 404" in {
+      val todoService = mock[TodoService]
+      val controller = new TodoController(stubControllerComponents(), todoService)
+      val todoId = UUID.randomUUID()
+
+      when(todoService.findById(todoId)) thenReturn Future.successful(None)
+
+      val request = FakeRequest(GET, s"/todos/${todoId}")
+      val response: Future[Result] = controller.getTodo(todoId).apply(request)
+      status(response) mustBe NOT_FOUND
+    }
+
     "mark todo complete false" in {
       val todoService = mock[TodoService]
       val controller = new TodoController(stubControllerComponents(), todoService)
@@ -127,6 +139,33 @@ class TodoControllerSpec extends PlaySpec with MockitoSugar with Serializers {
 
       val response: Future[Result] = controller.updateCompleteFlag(todoId).apply(request)
       status(response) mustBe OK
+    }
+
+
+    "add todo comment" in {
+      val todoService = mock[TodoService]
+      val controller = new TodoController(stubControllerComponents(), todoService)
+
+      val todoId = UUID.randomUUID()
+      val todo = Todo(
+        id = todoId,
+        title = "Todo title",
+        completed = false,
+        comments = List(Comment(id = UUID.randomUUID(), content = "new comment"))
+      )
+      when(todoService.addComment(todoId, AddCommentCommand("new comment"))) thenReturn Future.successful(todo)
+
+      val request: Request[AddCommentCommand] = FakeRequest(
+        method = POST,
+        uri = s"/todos/${todoId.toString}/comment",
+        headers = FakeHeaders(),
+        body = AddCommentCommand("new comment")
+      )
+
+      val response: Future[Result] = controller.addComment(todoId).apply(request)
+      status(response) mustBe OK
+      val result = contentAsJson(response).as[Todo]
+      result mustBe todo
     }
   }
 }
