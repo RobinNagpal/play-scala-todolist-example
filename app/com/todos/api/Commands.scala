@@ -6,6 +6,10 @@ case class CreateTodoCommand(
     title: String
 )
 
+case class AddCommentCommand(
+    content: String
+)
+
 case class EditCommentCommand(
     id: UUID,
     content: String

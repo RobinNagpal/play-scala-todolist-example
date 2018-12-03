@@ -9,7 +9,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play._
-import org.scalatestplus.play.guice._
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import play.api.test._
@@ -22,7 +21,7 @@ import scala.concurrent.Future
   *
   * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
   */
-class TodoControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting with MockitoSugar with Serializers {
+class TodoControllerSpec extends PlaySpec with MockitoSugar with Serializers {
 
   "TodoController" should {
 

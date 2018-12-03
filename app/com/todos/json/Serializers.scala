@@ -1,6 +1,6 @@
 package com.todos.json
 
-import com.todos.api.{CreateTodoCommand, EditCommentCommand, EditTodoCommand, UpdateCompleteFlagCommand}
+import com.todos.api._
 import com.todos.model.{Comment, Todo}
 import play.api.libs.json.Json
 import play.api.mvc.{Result, Results}
@@ -16,6 +16,7 @@ trait Serializers {
   implicit val commentReads = Json.reads[Comment]
   implicit val todoReads = Json.reads[Todo]
   implicit val createTodoCmdReads = Json.reads[CreateTodoCommand]
+  implicit val addCommentCmdReads = Json.reads[AddCommentCommand]
   implicit val editCommentCmdReads = Json.reads[EditCommentCommand]
   implicit val editTodoCmdReads = Json.reads[EditTodoCommand]
   implicit val completeTodoCmdReads = Json.reads[UpdateCompleteFlagCommand]
