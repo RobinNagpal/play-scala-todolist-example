@@ -91,10 +91,12 @@ class TodoRepositoryImpl @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionC
       todoDBOs <- todosFuture
     } yield
       todoDBOs map { todoDBO =>
-        Todo(id = todoDBO.id,
-             title = todoDBO.title,
-             completed = todoDBO.completed,
-             comments = groupedComments(todoDBO.id).map(comment => Comment(id = comment.id, content = comment.content)))
+        Todo(
+          id = todoDBO.id,
+          title = todoDBO.title,
+          completed = todoDBO.completed,
+          comments = groupedComments.get(todoDBO.id).map(comments => comments.map(comment => Comment(id = comment.id, content = comment.content))).getOrElse(List.empty)
+        )
       }
 
   }
@@ -109,7 +111,7 @@ class TodoRepositoryImpl @Inject()(dbapi: DBApi)(implicit ec: DatabaseExecutionC
   private def getAllCommentDBOs() =
     Future {
       db.withConnection { implicit connection =>
-        SQL"select * from comments".as(commentParser.*)
+        SQL"select * from comment".as(commentParser.*)
       }
     }(ec)
 

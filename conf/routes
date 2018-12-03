@@ -5,7 +5,9 @@
 
 # An example controller showing a sample home page
 GET           /todos                     com.todos.api.TodoController.getTodos
+GET           /todos/:id                 com.todos.api.TodoController.getTodo(id: java.util.UUID)
 POST          /todos                     com.todos.api.TodoController.createTodo
 PUT           /todos                     com.todos.api.TodoController.editTodo
 PUT           /todos/:id/complete        com.todos.api.TodoController.updateCompleteFlag(id: java.util.UUID)
+POST          /todos/:id/comment         com.todos.api.TodoController.addComment(id: java.util.UUID)
 DELETE        /todos/:id                 com.todos.api.TodoController.deleteTodo(id: java.util.UUID)

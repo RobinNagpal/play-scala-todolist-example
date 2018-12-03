@@ -2,6 +2,10 @@
 GET http://localhost:9000/todos
 Content-type: application/json
 
+### - PLain read
+GET http://localhost:9000/todos/89b5d5ea-9491-4ba4-8f53-22c5443df395
+Content-type: application/json
+
 ### - Create TODO with incomplete parameters
 POST http://localhost:9000/todos
 Content-type: application/json
@@ -11,13 +15,21 @@ Content-type: application/json
 ### - Create TODO
 POST http://localhost:9000/todos
 Content-type: application/json
+
 {
-    "title" : "Todo Title",
-    "description" : "Todo Description"
+    "title" : "Todo Title"
+}
+
+### - Create TODO
+POST http://localhost:9000/todos/89b5d5ea-9491-4ba4-8f53-22c5443df395/comment
+Content-type: application/json
+
+{
+    "content" : "Todo Title1"
 }
 
 ### -
-PUT http://localhost:9000/todos/067e6162-3b6f-4ae2-a171-2470b63dff00/complete
+PUT http://localhost:9000/todos/89b5d5ea-9491-4ba4-8f53-22c5443df395/complete
 Content-type: application/json
 
 {
@@ -25,7 +37,7 @@ Content-type: application/json
 }
 
 ###
-PUT http://localhost:9000/todos/067e6162-3b6f-4ae2-a171-2470b63dff00/complete
+PUT http://localhost:9000/todos/89b5d5ea-9491-4ba4-8f53-22c5443df395/complete
 Content-type: application/json
 
 {
@@ -33,6 +45,6 @@ Content-type: application/json
 }
 
 ###
-DELETE http://localhost:9000/todos/067e6162-3b6f-4ae2-a171-2470b63dff00
+DELETE http://localhost:9000/todos/5102c458-0143-480e-a2c3-30081afe4680
 
 ###

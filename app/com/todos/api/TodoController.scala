@@ -17,8 +17,15 @@ class TodoController @Inject()(cc: ControllerComponents, todoService: TodoServic
     Ok("OK")
   }
 
-  def getTodos = Action.async { request =>
+  def getTodos = Action.async {
     todoService.getTodos()
+  }
+
+  def getTodo(id: UUID) = Action.async {
+    todoService.findById(id).map {
+      case Some(todo) => Ok(Json.toJson(todo))
+      case None => NotFound
+    }
   }
 
   def createTodo = Action.async(validateJson[CreateTodoCommand]) { request =>
@@ -35,6 +42,10 @@ class TodoController @Inject()(cc: ControllerComponents, todoService: TodoServic
 
   def updateCompleteFlag(id: UUID) = Action.async(validateJson[UpdateCompleteFlagCommand]) { request =>
     todoService.updateCompleteFlag(id, request.body.isCompleted)
+  }
+
+  def addComment(id: UUID) = Action.async(validateJson[AddCommentCommand]) { request =>
+    todoService.addComment(id, request.body)
   }
 
   private def validateJson[A: Reads] = parse.json.validate(
